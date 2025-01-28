@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your personal LinkTree alternative - All your important links in one place">
+    <meta property="og:title" content="Your Name - Links">
+    <meta property="og:description" content="Connect with me across all platforms">
+    <meta property="og:type" content="website">
+    <title>Your Links</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --accent: #ffd700;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] {
+            --bg-gradient: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-primary: #333333;
+            --text-secondary: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .profile {
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .profile-img {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            border: 3px solid var(--accent);
+            padding: 3px;
+        }
+
+        .profile h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .link-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 1rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .link-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-card i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--card-bg);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            color: var(--text-primary);
+        }
+
+        .share-button {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: var(--accent);
+            border: none;
+            padding: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Category headers */
+        .category {
+            margin: 2rem 0 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* View counter */
+        .view-counter {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            background: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Loading animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loader::after {
+            content: "";
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--text-secondary);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .profile-img {
+                width: 96px;
+                height: 96px;
+            }
+
+            .profile h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    
+    <button class="theme-toggle" aria-label="Toggle theme">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <button class="share-button" aria-label="Share page">
+        <i class="fas fa-share-alt"></i>
+    </button>
+
+    <div class="view-counter">
+        <i class="fas fa-eye"></i> <span id="viewCount">0</span> views
+    </div>
+
+    <div class="container">
+        <div class="profile">
+            <img src="/api/placeholder/128/128" alt="Profile Picture" class="profile-img">
+            <h1>Your Name</h1>
+            <p>Your catchy bio goes here. Make it memorable! 🌟</p>
+        </div>
+
+        <div class="category">Social Media</div>
+        <div class="links" id="socialLinks">
+            <a href="#" class="link-card" style="animation: fadeInUp 0.6s ease forwards 0.2s">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+            <a href="#" class="link-card" style="animation: fadeInUp 0.6s ease forwards 0.3s">
+                <i class="fab fa-facebook"></i>
+                <span>Facebook</span>
+            </a>
+            <a href="#" class="link-card" style="animation: fadeInUp 0.6s ease forwards 0.4s">
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+            </a>
+            <a href="#" class="link-card" style="animation: fadeInUp 0.6s ease forwards 0.5s">
+                <i class="fab fa-linkedin"></i>
+                <span>LinkedIn</span>
+            </a>
+        </div>
+
+        <div class="category">Featured Content</div>
+        <div class="links" id="featuredLinks">
+            <a href="#" class="link-card" style="animation: fadeInUp 0.6s ease forwards 0.6s">
+                <i class="fas fa-blog"></i>
+                <span>My Blog</span>
+            </a>
+            <a href="#" class="link-card" style="animation: fadeInUp 0.6s ease forwards 0.7s">
+                <i class="fas fa-shopping-cart"></i>
+                <span>My Store</span>
+            </a>
+            <a href="#" class="link-card" style="animation: fadeInUp 0.6s ease forwards 0.8s">
+                <i class="fas fa-podcast"></i>
+                <span>My Podcast</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Remove loader after page loads
+        window.addEventListener('load', () => {
+            document.querySelector('.loader').style.display = 'none';
+            
+            // Increment view counter
+            const viewCount = localStorage.getItem('viewCount') || 0;
+            const newViewCount = parseInt(viewCount) + 1;
+            localStorage.setItem('viewCount', newViewCount);
+            document.getElementById('viewCount').textContent = newViewCount;
+        });
+
+        // Theme toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            if (currentTheme === 'light') {
+                document.body.removeAttribute('data-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        });
+
+        // Share functionality
+        const shareButton = document.querySelector('.share-button');
+        shareButton.addEventListener('click', async () => {
+            try {
+                await navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                });
+            } catch (err) {
+                // Fallback for browsers that don't support Web Share API
+                prompt('Share this link:', window.location.href);
+            }
+        });
+
+        // Link click animation
+        document.querySelectorAll('.link-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+
+        // Console Easter egg
+        console.log(
+            '%cWelcome to my links! 🚀',
+            'color: #764ba2; font-size: 20px; font-weight: bold;'
+        );
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.link-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
